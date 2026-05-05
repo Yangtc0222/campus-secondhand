@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>商品管理</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: '微软雅黑', Arial, sans-serif; background: #f5f5f5; font-size: 14px; }
+        .top-bar { background-color: #1e3a5f; height: 5px; }
+        .header { background: white; border-bottom: 1px solid #ddd; padding: 15px 0; }
+        .header-inner, .nav-inner, .container { width: 1100px; margin: 0 auto; }
+        .logo h1 { color: #1e3a5f; font-size: 20px; }
+        .nav { background: #1e3a5f; }
+        .nav a { float: left; color: white; padding: 10px 20px; text-decoration: none; }
+        .nav a:hover { background: #0f2b45; }
+        .container { margin-top: 20px; min-height: 500px; }
+        .card { background: white; border: 1px solid #ddd; padding: 20px; margin-bottom: 20px; }
+        .card h2 { font-size: 16px; border-left: 3px solid #1e3a5f; padding-left: 10px; margin-bottom: 15px; }
+        .form-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; align-items: flex-end; }
+        .form-group label { display: block; font-size: 12px; color: #666; margin-bottom: 3px; }
+        input, select { padding: 5px 8px; border: 1px solid #ccc; }
+        .btn { background: #1e3a5f; color: white; border: none; padding: 6px 15px; cursor: pointer; }
+        .btn-danger { background: #b85c4a; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background: #f0f4f8; }
+        .alert { padding: 8px 15px; margin-bottom: 15px; }
+        .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .alert-error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .footer { background: white; border-top: 1px solid #ddd; text-align: center; padding: 15px; color: #666; margin-top: 20px; }
+    </style>
+</head>
+<body>
+<div class="top-bar"></div>
+<div class="header"><div class="header-inner"><div class="logo"><h1>校园二手交易平台 - 商品管理</h1></div></div></div>
+<div class="nav"><div class="nav-inner"><a href="/">首页</a><a href="/items">刷新</a></div></div>
+<div class="container">
+    <div th:if="${param.buySuccess}" class="alert alert-success">购买成功！</div>
+    <div th:if="${param.error}" class="alert alert-error">购买失败（商品不存在或已售出）</div>
+    <div class="card"><h2>新增商品</h2>
+        <form action="/add-item" method="post">
+            <div class="form-row">
+                <div class="form-group"><label>商品ID</label><input name="itemId" required/></div>
+                <div class="form-group"><label>商品名称</label><input name="itemName" required/></div>
+                <div class="form-group"><label>分类</label><select name="category"><option>Book</option><option>DailyGoods</option><option>Electronics</option><option>Furniture</option></select></div>
+                <div class="form-group"><label>价格</label><input name="price" type="number" step="0.01" required/></div>
+                <div class="form-group"><label>卖家ID</label><input name="sellerId" required/></div>
+                <button class="btn">添加</button>
+            </div>
+        </form>
+    </div>
+    <div class="card"><h2>商品列表</h2>
+        <table>
+            <thead><tr><th>ID</th><th>名称</th><th>分类</th><th>价格</th><th>状态</th><th>卖家</th><th>操作</th></tr></thead>
+            <tbody>
+            <tr th:each="item : ${items}">
+                <td th:text="${item.itemId}">i001</td>
+                <td th:text="${item.itemName}">商品</td>
+                <td th:text="${item.category}">类</td>
+                <td th:text="${item.price}">0</td>
+                <td><span th:if="${item.status == 0}">未售出</span><span th:if="${item.status == 1}">已售出</span></td>
+                <td th:text="${item.sellerId}">u001</td>
+                <td>
+                    <form action="/update-price" method="post" style="display:inline"><input type="hidden" name="itemId" th:value="${item.itemId}"/><input name="price" type="number" step="0.01" style="width:65px;" placeholder="新价"/><button class="btn" style="padding:2px 8px">改价</button></form>
+                    <form action="/delete-item" method="post" style="display:inline"><input type="hidden" name="itemId" th:value="${item.itemId}"/><button class="btn btn-danger" style="padding:2px 8px" th:if="${item.status == 0}">删除</button></form>
+                    <form action="/buy-item" method="post" style="display:inline"><input type="hidden" name="itemId" th:value="${item.itemId}"/><select name="buyerId"><option>u001</option><option>u002</option><option>u003</option><option>u004</option></select><button class="btn" style="padding:2px 8px" th:if="${item.status == 0}">购买</button></form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="footer"><p>校园二手交易平台 | 数据库大作业</p></div>
+</body>
+</html>
