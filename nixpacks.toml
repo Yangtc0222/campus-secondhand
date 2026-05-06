@@ -2,7 +2,15 @@
 nixPkgs = ["jdk8", "maven"]
 
 [phases.install]
-cmds = ["mvn clean package -DskipTests"]
+cmds = [
+    "mvn clean package -DskipTests"
+]
 
 [phases.start]
-cmd = "java -Dserver.port=9999 -Dserver.address=0.0.0.0 -jar target/*.jar"
+cmd = [
+    "java",
+    "-Dserver.port=${PORT}",
+    "-Dserver.address=0.0.0.0",
+    "-jar",
+    "target/*.jar"
+]
