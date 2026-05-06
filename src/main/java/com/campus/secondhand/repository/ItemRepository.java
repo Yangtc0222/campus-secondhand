@@ -5,12 +5,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import java.util.List;
+import java.math.BigDecimal;
 
 public interface ItemRepository extends JpaRepository<Item, String> {
 
     List<Item> findByStatus(Integer status);
 
-    List<Item> findByPriceGreaterThan(Double price);
+    List<Item> findByPriceGreaterThan(BigDecimal price);
 
     List<Item> findByCategory(String category);
 

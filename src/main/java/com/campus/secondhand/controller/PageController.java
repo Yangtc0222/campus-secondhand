@@ -77,7 +77,7 @@ public class PageController {
     // 基本查询2：价格大于30
     @GetMapping("/price-gt-30")
     public String priceGt30(Model model) {
-        model.addAttribute("items", itemRepository.findByPriceGreaterThan(30.0));
+        model.addAttribute("items", itemRepository.findByPriceGreaterThan(BigDecimal.valueOf(30.0)));
         model.addAttribute("queryName", "价格大于30的商品");
         return "query_result";
     }
