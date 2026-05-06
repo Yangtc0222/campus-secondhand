@@ -1,5 +1,5 @@
-# 使用阿里云镜像的 Java 8 基础镜像
-FROM registry.cn-hangzhou.aliyuncs.com/alidocker/openjdk:8-jdk-alpine
+# 使用 Eclipse Temurin 的 Java 8 镜像（官方推荐）
+FROM eclipse-temurin:8-jdk-alpine
 
 # 设置工作目录
 WORKDIR /app
