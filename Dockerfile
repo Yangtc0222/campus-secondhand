@@ -30,4 +30,4 @@ RUN apk add --no-cache maven && \
 EXPOSE 9999
 
 # 启动应用
-CMD ["java", "-Dserver.port=9999", "-Dserver.address=0.0.0.0", "-jar", "target/*.jar"]
+CMD ["sh", "-c", "java -Dserver.port=9999 -Dserver.address=0.0.0.0 -jar target/*.jar"]
