@@ -1,27 +1,85 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"><title>订单列表</title></head>
+<head>
+    <meta charset="UTF-8">
+    <title>订单列表 - 校园二手交易平台</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: '微软雅黑', '宋体', Arial, sans-serif; background-color: #f5f5f5; color: #333; font-size: 14px; }
+        .top-bar { background-color: #1e3a5f; height: 8px; }
+        .header { background-color: #fff; border-bottom: 1px solid #ddd; padding: 20px 0; }
+        .header-inner { width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo h1 { color: #1e3a5f; font-size: 24px; font-weight: normal; }
+        .logo p { color: #666; font-size: 12px; margin-top: 5px; }
+        .nav { background-color: #1e3a5f; }
+        .nav-inner { width: 1100px; margin: 0 auto; overflow: hidden; }
+        .nav a { float: left; display: block; color: white; text-align: center; padding: 12px 20px; text-decoration: none; font-size: 14px; }
+        .nav a:hover { background-color: #0f2b45; }
+        .container { width: 1100px; margin: 20px auto; min-height: 500px; }
+        .card { background: white; border: 1px solid #ddd; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .card h2 { font-size: 18px; padding-bottom: 10px; border-bottom: 2px solid #1e3a5f; margin-bottom: 15px; color: #1e3a5f; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #f0f4f8; font-weight: normal; }
+        .footer { background-color: #fff; border-top: 1px solid #ddd; text-align: center; padding: 20px; color: #666; font-size: 12px; margin-top: 40px; }
+    </style>
+</head>
 <body>
-<h2>已完成订单</h2>
-<table border="1">
-    <tr><th>订单ID</th><th>商品ID</th><th>买家ID</th><th>日期</th></tr>
-    <tr th:each="o : ${orders}">
-        <td th:text="${o.orderId}"></td>
-        <td th:text="${o.itemId}"></td>
-        <td th:text="${o.buyerId}"></td>
-        <td th:text="${o.orderDate}"></td>
-    </tr>
-</table>
-
-<h2>订单详情（商品+买家+日期）</h2>
-<table border="1">
-    <tr><th>商品名</th><th>买家</th><th>日期</th></tr>
-    <tr th:each="d : ${orderDetails}">
-        <td th:text="${d[0]}"></td>
-        <td th:text="${d[1]}"></td>
-        <td th:text="${d[2]}"></td>
-    </tr>
-</table>
-<a href="/">返回首页</a>
+<div class="top-bar"></div>
+<div class="header">
+    <div class="header-inner">
+        <div class="logo">
+            <h1>校园二手交易平台</h1>
+            <p>Campus Second-hand Trading Platform</p>
+        </div>
+    </div>
+</div>
+<div class="nav">
+    <div class="nav-inner">
+        <a href="/">首页</a>
+        <a href="/items">商品管理</a>
+        <a href="/users">用户列表</a>
+        <a href="/orders">订单列表</a>
+        <a href="/unsold">未售商品</a>
+        <a href="/price-gt-30">价格&gt;30</a>
+        <a href="/daily-goods">生活用品</a>
+        <a href="/u001-items">u001商品</a>
+        <a href="/sold-with-buyer">已售商品</a>
+        <a href="/order-details">订单详情</a>
+        <a href="/u001-purchase-status">u001销售状态</a>
+    </div>
+</div>
+<div class="container">
+    <div class="card">
+        <h2>已完成订单</h2>
+        <table>
+            <thead><tr><th>订单ID</th><th>商品ID</th><th>买家ID</th><th>购买日期</th></tr></thead>
+            <tbody>
+            <tr th:each="o : ${orders}">
+                <td th:text="${o.orderId}">-</td>
+                <td th:text="${o.itemId}">-</td>
+                <td th:text="${o.buyerId}">-</td>
+                <td th:text="${o.orderDate}">-</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="card">
+        <h2>订单详情（商品+买家+日期）</h2>
+        <table>
+            <thead><tr><th>商品名称</th><th>买家姓名</th><th>购买日期</th></tr></thead>
+            <tbody>
+            <tr th:each="d : ${orderDetails}">
+                <td th:text="${d[0]}">-</td>
+                <td th:text="${d[1]}">-</td>
+                <td th:text="${d[2]}">-</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="footer">
+    <p>校园二手交易平台 | 数据库大作业</p>
+</div>
 </body>
 </html>

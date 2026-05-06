@@ -1,19 +1,87 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"><title>u001商品购买状态</title></head>
+<head>
+    <meta charset="UTF-8">
+    <title>u001商品销售状态</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: '微软雅黑', '宋体', Arial, sans-serif; background-color: #f5f5f5; color: #333; font-size: 14px; }
+        .top-bar { background-color: #1e3a5f; height: 8px; }
+        .header { background-color: #fff; border-bottom: 1px solid #ddd; padding: 20px 0; }
+        .header-inner { width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo h1 { color: #1e3a5f; font-size: 24px; font-weight: normal; }
+        .logo p { color: #666; font-size: 12px; margin-top: 5px; }
+        .nav { background-color: #1e3a5f; }
+        .nav-inner { width: 1100px; margin: 0 auto; overflow: hidden; }
+        .nav a { float: left; display: block; color: white; text-align: center; padding: 12px 20px; text-decoration: none; font-size: 14px; }
+        .nav a:hover { background-color: #0f2b45; }
+        .container { width: 1100px; margin: 20px auto; min-height: 500px; }
+        .card { background: white; border: 1px solid #ddd; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .card h2 { font-size: 18px; padding-bottom: 10px; border-bottom: 2px solid #1e3a5f; margin-bottom: 15px; color: #1e3a5f; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #f0f4f8; font-weight: normal; }
+        .status-sold { color: #b85c4a; }
+        .status-unsold { color: #3a7a5a; }
+        .footer { background-color: #fff; border-top: 1px solid #ddd; text-align: center; padding: 20px; color: #666; font-size: 12px; margin-top: 40px; }
+        .back-link { margin-top: 20px; }
+        .back-link a { color: #1e3a5f; text-decoration: none; }
+    </style>
+</head>
 <body>
-<h2>u001发布的商品是否被购买</h2>
-<table border="1">
-    <tr><th>商品ID</th><th>名称</th><th>价格</th><th>商品状态</th><th>是否已购买</th><th>订单ID</th></tr>
-    <tr th:each="row : ${results}">
-        <td th:text="${row[0].itemId}"></td>
-        <td th:text="${row[0].itemName}"></td>
-        <td th:text="${row[0].price}"></td>
-        <td th:if="${row[0].status == 0}">未售出</td><td th:if="${row[0].status == 1}">已售出</td>
-        <td th:if="${row[1] != null}">是</td><td th:if="${row[1] == null}">否</td>
-        <td th:text="${row[1] != null ? row[1].orderId : ''}"></td>
-    </tr>
-</table>
-<a href="/">返回首页</a>
+<div class="top-bar"></div>
+<div class="header">
+    <div class="header-inner">
+        <div class="logo">
+            <h1>校园二手交易平台</h1>
+            <p>Campus Second-hand Trading Platform</p>
+        </div>
+    </div>
+</div>
+<div class="nav">
+    <div class="nav-inner">
+        <a href="/">首页</a>
+        <a href="/items">商品管理</a>
+        <a href="/users">用户列表</a>
+        <a href="/orders">订单列表</a>
+        <a href="/unsold">未售商品</a>
+        <a href="/price-gt-30">价格&gt;30</a>
+        <a href="/daily-goods">生活用品</a>
+        <a href="/u001-items">u001商品</a>
+        <a href="/sold-with-buyer">已售商品</a>
+        <a href="/order-details">订单详情</a>
+        <a href="/u001-purchase-status">u001销售状态</a>
+    </div>
+</div>
+<div class="container">
+    <div class="card">
+        <h2>u001发布的商品是否已被购买</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>商品ID</th><th>商品名称</th><th>价格</th><th>商品状态</th><th>是否已购买</th><th>订单ID</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="row : ${results}">
+                <td th:text="${row[0] != null ? row[0].itemId : '-'}">-</td>
+                <td th:text="${row[0] != null ? row[0].itemName : '-'}">-</td>
+                <td th:text="${row[0] != null ? row[0].price : '-'}">-</td>
+                <td>
+                    <span th:if="${row[0] != null and row[0].status == 0}" class="status-unsold">未售出</span>
+                    <span th:if="${row[0] != null and row[0].status == 1}" class="status-sold">已售出</span>
+                </td>
+                <td th:if="${row[1] != null}">✅ 是</td>
+                <td th:if="${row[1] == null}">❌ 否</td>
+                <td th:text="${row[1] != null ? row[1].orderId : '-'}">-</td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="back-link"><a href="/">返回首页</a></div>
+    </div>
+</div>
+<div class="footer">
+    <p>校园二手交易平台 | 数据库大作业</p>
+</div>
 </body>
 </html>
