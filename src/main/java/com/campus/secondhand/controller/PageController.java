@@ -1,5 +1,6 @@
 package com.campus.secondhand.controller;
 
+import com.campus.secondhand.entity.Item;
 import com.campus.secondhand.repository.ItemRepository;
 import com.campus.secondhand.repository.OrderRepository;
 import com.campus.secondhand.repository.UserRepository;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Controller
@@ -16,21 +18,29 @@ public class PageController {
 
     @Autowired
     private ItemRepository itemRepository;
+
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private OrderRepository orderRepository;
+
     @Autowired
     private OrderService orderService;
 
     // 首页
     @GetMapping("/")
     public String index(Model model) {
-        model.addAttribute("totalItems", itemRepository.count());
-        Double avg = itemRepository.getAveragePrice();
-        model.addAttribute("avgPrice", avg != null ? avg : 0);
-        model.addAttribute("categoryCount", itemRepository.countByCategory());
-        model.addAttribute("topSeller", itemRepository.findTopSeller());
+        long totalItems = itemRepository.count();
+        Double avgPrice = itemRepository.getAveragePrice();
+        if (avgPrice == null) avgPrice = 0.0;
+        List<Object[]> categoryCount = itemRepository.countByCategory();
+        List<Object[]> topSeller = itemRepository.findTopSeller();
+
+        model.addAttribute("totalItems", totalItems);
+        model.addAttribute("avgPrice", avgPrice);
+        model.addAttribute("categoryCount", categoryCount);
+        model.addAttribute("topSeller", topSeller);
         return "index";
     }
 
@@ -126,7 +136,7 @@ public class PageController {
         item.setItemId(itemId);
         item.setItemName(itemName);
         item.setCategory(category);
-        item.setPrice(java.math.BigDecimal.valueOf(price));
+        item.setPrice(BigDecimal.valueOf(price));
         item.setStatus(0);
         item.setSellerId(sellerId);
         itemRepository.save(item);
@@ -137,7 +147,7 @@ public class PageController {
     @PostMapping("/update-price")
     public String updatePrice(@RequestParam String itemId, @RequestParam Double price) {
         itemRepository.findById(itemId).ifPresent(item -> {
-            item.setPrice(java.math.BigDecimal.valueOf(price));
+            item.setPrice(BigDecimal.valueOf(price));
             itemRepository.save(item);
         });
         return "redirect:/items";
@@ -156,7 +166,9 @@ public class PageController {
 
     // 购买商品
     @PostMapping("/buy-item")
-    public String buyItem(@RequestParam String itemId, @RequestParam String buyerId, Model model) {
+    public String buyItem(@RequestParam String itemId,
+                          @RequestParam String buyerId,
+                          Model model) {
         boolean success = orderService.buyItem(itemId, buyerId);
         if (!success) {
             model.addAttribute("error", "购买失败：商品不存在或已被购买");

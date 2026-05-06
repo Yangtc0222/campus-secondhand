@@ -1,7 +1,7 @@
 package com.campus.secondhand.entity;
 
-import javax.persistence.*;
 import lombok.Data;
+import javax.persistence.*;
 
 @Data
 @Entity
