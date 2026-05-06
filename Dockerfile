@@ -1,5 +1,5 @@
-# 使用 Java 8 基础镜像
-FROM openjdk:8-jdk-alpine
+# 使用阿里云镜像的 Java 8 基础镜像
+FROM registry.cn-hangzhou.aliyuncs.com/alidocker/openjdk:8-jdk-alpine
 
 # 设置工作目录
 WORKDIR /app
