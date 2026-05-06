@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title th:text="${queryName}"></title></head>
+<body>
+<h2 th:text="${queryName}"></h2>
+<table border="1">
+    <tr th:each="row : ${results}">
+        <td th:each="col : ${row}" th:text="${col}"></td>
+    </tr>
+</table>
+<a href="/">返回首页</a>
+</body>
+</html>

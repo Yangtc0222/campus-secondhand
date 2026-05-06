@@ -9,49 +9,46 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 public class PageController {
 
     @Autowired
     private ItemRepository itemRepository;
-
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private OrderRepository orderRepository;
-
     @Autowired
     private OrderService orderService;
 
-    // ========== 页面导航 ==========
-
-    // 首页（要求：首页导航）
+    // 首页
     @GetMapping("/")
     public String index(Model model) {
-//        // 聚合统计（要求：统计商品总数、平均价格）
-        model.addAttribute("totalItems", itemRepository.getTotalItemCount());
-        model.addAttribute("avgPrice", itemRepository.getAveragePrice());
+        model.addAttribute("totalItems", itemRepository.count());
+        Double avg = itemRepository.getAveragePrice();
+        model.addAttribute("avgPrice", avg != null ? avg : 0);
         model.addAttribute("categoryCount", itemRepository.countByCategory());
         model.addAttribute("topSeller", itemRepository.findTopSeller());
         return "index";
     }
 
-    // 商品列表页面（要求）
+    // 商品列表页面（含所有操作）
     @GetMapping("/items")
     public String items(Model model) {
         model.addAttribute("items", itemRepository.findAll());
         return "items";
     }
 
-    // 用户列表页面（要求）
+    // 用户列表
     @GetMapping("/users")
     public String users(Model model) {
         model.addAttribute("users", userRepository.findAll());
         return "users";
     }
 
-    // 订单列表页面（要求）
+    // 订单列表（包含订单详情连接查询）
     @GetMapping("/orders")
     public String orders(Model model) {
         model.addAttribute("orders", orderRepository.findAll());
@@ -59,17 +56,15 @@ public class PageController {
         return "orders";
     }
 
-    // ========== 基本查询（要求 4 个）==========
-
-    // 查询1：未售出商品
+    // 基本查询1：未售出商品
     @GetMapping("/unsold")
-    public String unsoldItems(Model model) {
+    public String unsold(Model model) {
         model.addAttribute("items", itemRepository.findByStatus(0));
         model.addAttribute("queryName", "未售出商品");
         return "query_result";
     }
 
-    // 查询2：价格大于30
+    // 基本查询2：价格大于30
     @GetMapping("/price-gt-30")
     public String priceGt30(Model model) {
         model.addAttribute("items", itemRepository.findByPriceGreaterThan(30.0));
@@ -77,7 +72,7 @@ public class PageController {
         return "query_result";
     }
 
-    // 查询3：生活用品类
+    // 基本查询3：生活用品类
     @GetMapping("/daily-goods")
     public String dailyGoods(Model model) {
         model.addAttribute("items", itemRepository.findByCategory("DailyGoods"));
@@ -85,7 +80,7 @@ public class PageController {
         return "query_result";
     }
 
-    // 查询4：u001发布的商品
+    // 基本查询4：u001发布的商品
     @GetMapping("/u001-items")
     public String u001Items(Model model) {
         model.addAttribute("items", itemRepository.findBySellerId("u001"));
@@ -93,20 +88,20 @@ public class PageController {
         return "query_result";
     }
 
-    // ========== 连接查询（要求 3 个）==========
-
-    // 连接查询1：已售商品及其买家姓名
+    // 连接查询1：已售商品+买家姓名
     @GetMapping("/sold-with-buyer")
     public String soldWithBuyer(Model model) {
-        model.addAttribute("results", itemRepository.findSoldItemsWithBuyerName());
+        List<Object[]> results = itemRepository.findSoldItemsWithBuyerName();
+        model.addAttribute("results", results);
         model.addAttribute("queryName", "已售商品及买家姓名");
         return "join_query_result";
     }
 
-    // 连接查询2：每个订单的商品名+买家名+日期
+    // 连接查询2：订单详情（商品名+买家名+日期）
     @GetMapping("/order-details")
     public String orderDetails(Model model) {
-        model.addAttribute("results", orderRepository.findOrderDetails());
+        List<Object[]> results = orderRepository.findOrderDetails();
+        model.addAttribute("results", results);
         model.addAttribute("queryName", "订单详情（商品+买家+日期）");
         return "join_query_result";
     }
@@ -114,32 +109,31 @@ public class PageController {
     // 连接查询3：卖家u001的商品是否被购买
     @GetMapping("/u001-purchase-status")
     public String u001PurchaseStatus(Model model) {
-        model.addAttribute("results", orderRepository.findU001ItemsWithOrder());
+        List<Object[]> results = orderRepository.findU001ItemsWithOrder();
+        model.addAttribute("results", results);
         model.addAttribute("queryName", "u001商品购买状态");
         return "u001_purchase";
     }
 
-    // ========== 数据操作（要求：插入、修改、删除）==========
-
-    // 插入新商品（要求）
+    // 添加新商品
     @PostMapping("/add-item")
     public String addItem(@RequestParam String itemId,
                           @RequestParam String itemName,
                           @RequestParam String category,
                           @RequestParam Double price,
                           @RequestParam String sellerId) {
-        com.campus.secondhand.entity.Item item = new com.campus.secondhand.entity.Item();
+        Item item = new Item();
         item.setItemId(itemId);
         item.setItemName(itemName);
         item.setCategory(category);
         item.setPrice(java.math.BigDecimal.valueOf(price));
-        item.setStatus(0);  // 新商品默认为未售出
+        item.setStatus(0);
         item.setSellerId(sellerId);
         itemRepository.save(item);
         return "redirect:/items";
     }
 
-    // 修改商品价格（要求）
+    // 修改商品价格
     @PostMapping("/update-price")
     public String updatePrice(@RequestParam String itemId, @RequestParam Double price) {
         itemRepository.findById(itemId).ifPresent(item -> {
@@ -149,7 +143,7 @@ public class PageController {
         return "redirect:/items";
     }
 
-    // 删除未售出商品（要求）
+    // 删除未售出商品
     @PostMapping("/delete-item")
     public String deleteItem(@RequestParam String itemId) {
         itemRepository.findById(itemId).ifPresent(item -> {
@@ -160,16 +154,13 @@ public class PageController {
         return "redirect:/items";
     }
 
-    // ========== 业务逻辑：购买商品 ==========
-
+    // 购买商品
     @PostMapping("/buy-item")
     public String buyItem(@RequestParam String itemId, @RequestParam String buyerId, Model model) {
         boolean success = orderService.buyItem(itemId, buyerId);
-        if (success) {
-            return "redirect:/items?buySuccess";
-        } else {
+        if (!success) {
             model.addAttribute("error", "购买失败：商品不存在或已被购买");
-            return "items";
         }
+        return "redirect:/items";
     }
 }

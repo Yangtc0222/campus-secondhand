@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>用户列表</title><link rel="stylesheet" href="/css/style.css"></head>
+<body>
+<div class="container">
+    <h1>用户列表</h1>
+    <table border="1">
+        <tr><th>用户ID</th><th>姓名</th><th>电话</th></tr>
+        <tr th:each="u : ${users}">
+            <td th:text="${u.userId}"></td>
+            <td th:text="${u.userName}"></td>
+            <td th:text="${u.phone}"></td>
+        </tr>
+    </table>
+    <a href="/">返回首页</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>u001商品购买状态</title></head>
+<body>
+<h2>u001发布的商品是否被购买</h2>
+<table border="1">
+    <tr><th>商品ID</th><th>名称</th><th>价格</th><th>商品状态</th><th>是否已购买</th><th>订单ID</th></tr>
+    <tr th:each="row : ${results}">
+        <td th:text="${row[0].itemId}"></td>
+        <td th:text="${row[0].itemName}"></td>
+        <td th:text="${row[0].price}"></td>
+        <td th:if="${row[0].status == 0}">未售出</td><td th:if="${row[0].status == 1}">已售出</td>
+        <td th:if="${row[1] != null}">是</td><td th:if="${row[1] == null}">否</td>
+        <td th:text="${row[1] != null ? row[1].orderId : ''}"></td>
+    </tr>
+</table>
+<a href="/">返回首页</a>
+</body>
+</html>

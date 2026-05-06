@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title th:text="${queryName}"></title></head>
+<body>
+<h2 th:text="${queryName}"></h2>
+<table border="1">
+    <tr><th>商品ID</th><th>名称</th><th>分类</th><th>价格</th><th>状态</th><th>卖家</th></tr>
+    <tr th:each="item : ${items}">
+        <td th:text="${item.itemId}"></td>
+        <td th:text="${item.itemName}"></td>
+        <td th:text="${item.category}"></td>
+        <td th:text="${item.price}"></td>
+        <td th:if="${item.status == 0}">未售出</td><td th:if="${item.status == 1}">已售出</td>
+        <td th:text="${item.sellerId}"></td>
+    </tr>
+</table>
+<a href="/">返回首页</a>
+</body>
+</html>
